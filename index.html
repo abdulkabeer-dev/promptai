@@ -1,0 +1,590 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Improver</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    min-height: 40vh;
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .category-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .category-card.active {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .floating-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .typing-effect {
+            border-right: 2px solid #4f46e5;
+            animation: blink 1s infinite;
+            padding-right: 0.5rem;
+        }
+        
+        @keyframes blink {
+            0%, 50% { border-color: transparent; }
+            51%, 100% { border-color: #4f46e5; }
+        }
+        
+        .result-card {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-left: 4px solid #0ea5e9;
+        }
+        
+        .loading-dots {
+            display: inline-block;
+        }
+        
+        .loading-dots::after {
+            content: '';
+            animation: dots 1.5s infinite;
+        }
+        
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+        
+        .char-counter {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        
+        .char-counter.warning {
+            color: #f59e0b;
+        }
+        
+        .char-counter.error {
+            color: #ef4444;
+        }
+        
+        .validation-message {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+        
+        .validation-message.success {
+            color: #10b981;
+        }
+        
+        .validation-message.error {
+            color: #ef4444;
+        }
+        
+        .improvement-tip {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 4px solid #f59e0b;
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50">
+    <!-- Header Section -->
+    <div class="gradient-bg text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <div class="floating-animation inline-block mb-6">
+                <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/9cfd8588-1692-4ea8-8623-2c7cdcf86eff.png" alt="AI brain icon with neural network connections in vibrant blue and purple colors" class="w-16 h-16 md:w-20 md:h-20 mx-auto rounded-full shadow-lg">
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 typing-effect">AI Prompt Improver</h1>
+            <p class="text-lg md:text-xl lg:text-2xl opacity-90 max-w-3xl mx-auto px-4">Transform basic prompts into powerful AI instructions with better results</p>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div class="container mx-auto px-4 py-8 md:py-12">
+        <!-- Category Selection -->
+        <div class="mb-12">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-6 md:mb-8">Choose Your Prompt Category</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- General Research -->
+                <div class="category-card bg-white rounded-xl p-6 shadow-lg border-2 border-transparent" data-category="research">
+                    <div class="text-center">
+                        <div class="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 bg-blue-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-search text-2xl text-blue-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-800">General Research</h3>
+                        <p class="text-gray-600 text-sm">Enhance prompts for research, analysis, and information gathering</p>
+                    </div>
+                </div>
+
+                <!-- Image Generation -->
+                <div class="category-card bg-white rounded-xl p-6 shadow-lg border-2 border-transparent" data-category="image">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-purple-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-palette text-2xl text-purple-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-800">Image Generation</h3>
+                        <p class="text-gray-600 text-sm">Create detailed prompts for AI image generation tools</p>
+                    </div>
+                </div>
+
+                <!-- Coding -->
+                <div class="category-card bg-white rounded-xl p-6 shadow-lg border-2 border-transparent" data-category="coding">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-green-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-code text-2xl text-green-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-800">Coding</h3>
+                        <p class="text-gray-600 text-sm">Optimize prompts for programming and development tasks</p>
+                    </div>
+                </div>
+
+                <!-- Idea to Prompt -->
+                <div class="category-card bg-white rounded-xl p-6 shadow-lg border-2 border-transparent" data-category="idea">
+                    <div class="text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 bg-orange-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-lightbulb text-2xl text-orange-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2 text-gray-800">Idea to Prompt</h3>
+                        <p class="text-gray-600 text-sm">Transform vague ideas into structured, actionable prompts</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="max-w-4xl mx-auto px-2 sm:px-0">
+            <div class="bg-white rounded-xl shadow-lg p-4 sm:p-6 md:p-8 mb-8">
+                <div class="mb-6">
+                    <label class="block text-lg font-semibold text-gray-800 mb-3">
+                        <i class="fas fa-edit mr-2 text-indigo-600"></i>
+                        Enter Your Prompt
+                    </label>
+                    <div class="relative">
+                        <textarea 
+                            id="userPrompt" 
+                            placeholder="Type your prompt... (e.g., 'Create a responsive restaurant website with online ordering')"
+                            class="w-full h-32 p-4 border-2 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-300 resize-none"
+                            maxlength="1000"
+                        ></textarea>
+                        <div class="absolute bottom-3 right-3 char-counter" id="charCounter">0/1000</div>
+                    </div>
+                    <div id="validationMessage" class="validation-message hidden"></div>
+                </div>
+
+                <!-- Improvement Tips -->
+                <div class="improvement-tip rounded-lg p-4 mb-6">
+                    <h4 class="font-semibold text-gray-800 mb-2">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        Tips for Better Results:
+                    </h4>
+                    <ul class="text-sm text-gray-700 space-y-1" id="categoryTips">
+                        <li>• Be specific about your requirements</li>
+                        <li>• Include context and background information</li>
+                        <li>• Mention your target audience</li>
+                        <li>• Specify the desired output format</li>
+                    </ul>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col space-y-3 sm:space-y-0 sm:flex-row sm:gap-4">
+                    <button 
+                        id="improveBtn" 
+                        class="flex-1 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold py-3 px-6 rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled
+                    >
+                        <i class="fas fa-magic mr-2"></i>
+                        <span id="btnText">Improve My Prompt</span>
+                    </button>
+                    <button 
+                        id="clearBtn" 
+                        class="bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg hover:bg-gray-700 transition-all duration-300"
+                    >
+                        <i class="fas fa-trash mr-2"></i>
+                        Clear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="hidden">
+                <div class="result-card rounded-xl p-8 shadow-lg">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">
+                        <i class="fas fa-star mr-2 text-yellow-500"></i>
+                        Your Improved Prompt
+                    </h3>
+                    
+                    <!-- Before/After Comparison -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-red-800 mb-2">
+                                <i class="fas fa-times-circle mr-2"></i>
+                                Before (Original)
+                            </h4>
+                            <p id="originalPrompt" class="text-red-700 text-sm"></p>
+                        </div>
+                        <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                            <h4 class="font-semibold text-green-800 mb-2">
+                                <i class="fas fa-check-circle mr-2"></i>
+                                After (Improved)
+                            </h4>
+                            <p id="improvedPrompt" class="text-green-700 text-sm"></p>
+                        </div>
+                    </div>
+
+                    <!-- Copy Button -->
+                    <div class="flex justify-end">
+                        <button 
+                            id="copyBtn" 
+                            class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg hover:bg-blue-700 transition-all duration-300"
+                        >
+                            <i class="fas fa-copy mr-2"></i>
+                            Copy Improved Prompt
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+        <div class="container mx-auto px-4 text-center">
+            <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/ff4ec9d3-f331-4351-a15f-83f493ee4cc3.png" alt="AI assistant avatar with friendly expression and tech elements" class="w-12 h-12 mx-auto mb-4 rounded-full">
+            <p class="text-gray-400">Powered by Advanced AI Technology</p>
+        </div>
+    </footer>
+
+    <script>
+        // Application State
+        let selectedCategory = null;
+        let isProcessing = false;
+
+        // DOM Elements
+        const categoryCards = document.querySelectorAll('.category-card');
+        const userPromptTextarea = document.getElementById('userPrompt');
+        const charCounter = document.getElementById('charCounter');
+        const validationMessage = document.getElementById('validationMessage');
+        const improveBtn = document.getElementById('improveBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const btnText = document.getElementById('btnText');
+        const resultsSection = document.getElementById('resultsSection');
+        const originalPrompt = document.getElementById('originalPrompt');
+        const improvedPrompt = document.getElementById('improvedPrompt');
+        const copyBtn = document.getElementById('copyBtn');
+        const categoryTips = document.getElementById('categoryTips');
+
+        // Category-specific tips
+        const categoryTipsData = {
+            research: [
+                '• Specify the research topic and scope clearly',
+                '• Mention the type of sources you prefer',
+                '• Include the intended use of the research',
+                '• Specify the depth of analysis needed'
+            ],
+            image: [
+                '• Describe the visual style and mood',
+                '• Specify colors, lighting, and composition',
+                '• Include artistic references or styles',
+                '• Mention image dimensions and quality'
+            ],
+            coding: [
+                '• Specify the programming language',
+                '• Include functionality requirements',
+                '• Mention coding standards and frameworks',
+                '• Describe the expected output format'
+            ],
+            idea: [
+                '• Explain your core concept clearly',
+                '• Provide context and background',
+                '• Mention your goals and objectives',
+                '• Include any constraints or requirements'
+            ]
+        };
+
+        // Prompt improvement templates
+        const improvementTemplates = {
+            research: {
+                prefix: "As an expert researcher, please provide a comprehensive analysis on",
+                structure: "Include background context, current trends, statistical data, expert opinions, and actionable insights. Format the response with clear sections and cite relevant sources where applicable.",
+                suffix: "Ensure the research is current, credible, and presented in an easy-to-understand format suitable for decision-making."
+            },
+            image: {
+                prefix: "Create a highly detailed image with the following specifications:",
+                structure: "Style: [photorealistic/artistic/cartoon], Lighting: [natural/dramatic/soft], Colors: [vibrant/muted/monochrome], Composition: [rule of thirds/centered/dynamic], Quality: high-resolution, 4K",
+                suffix: "Ensure the image is visually striking, professionally composed, and captures the intended mood and atmosphere."
+            },
+            coding: {
+                prefix: "As an expert software developer, create clean, efficient, and well-documented code that",
+                structure: "Include: proper error handling, input validation, clear comments, modular structure, best practices, and testing considerations. Follow industry standards and conventions.",
+                suffix: "Provide explanations for complex logic and suggest potential improvements or optimizations."
+            },
+            idea: {
+                prefix: "Transform this concept into a detailed, actionable plan:",
+                structure: "Break down into: clear objectives, step-by-step implementation, required resources, potential challenges, success metrics, and timeline considerations.",
+                suffix: "Provide creative suggestions and alternatives to enhance the original idea while maintaining feasibility."
+            }
+        };
+
+        // Event Listeners
+        categoryCards.forEach(card => {
+            card.addEventListener('click', () => selectCategory(card));
+        });
+
+        userPromptTextarea.addEventListener('input', () => {
+            updateCharCounter();
+            validateInput();
+            updateImproveButton();
+        });
+
+        improveBtn.addEventListener('click', improvePrompt);
+        clearBtn.addEventListener('click', clearAll);
+        copyBtn.addEventListener('click', copyImprovedPrompt);
+
+        // Functions
+        function selectCategory(selectedCard) {
+            // Remove active class from all cards
+            categoryCards.forEach(card => card.classList.remove('active'));
+            
+            // Add active class to selected card
+            selectedCard.classList.add('active');
+            
+            // Set selected category
+            selectedCategory = selectedCard.dataset.category;
+            
+            // Update tips
+            updateCategoryTips();
+            
+            // Update improve button state
+            updateImproveButton();
+            
+            // Add visual feedback
+            selectedCard.style.transform = 'scale(1.02)';
+            setTimeout(() => {
+                selectedCard.style.transform = '';
+            }, 200);
+        }
+
+        function updateCategoryTips() {
+            if (selectedCategory && categoryTipsData[selectedCategory]) {
+                categoryTips.innerHTML = categoryTipsData[selectedCategory]
+                    .map(tip => `<li>${tip}</li>`)
+                    .join('');
+            }
+        }
+
+        function updateCharCounter() {
+            const currentLength = userPromptTextarea.value.length;
+            const maxLength = userPromptTextarea.maxLength;
+            charCounter.textContent = `${currentLength}/${maxLength}`;
+            
+            // Update counter color based on usage
+            charCounter.classList.remove('warning', 'error');
+            if (currentLength > maxLength * 0.8) {
+                charCounter.classList.add('warning');
+            }
+            if (currentLength > maxLength * 0.95) {
+                charCounter.classList.add('error');
+            }
+        }
+
+        function validateInput() {
+            const prompt = userPromptTextarea.value.trim();
+            validationMessage.classList.add('hidden');
+            validationMessage.classList.remove('success', 'error');
+            
+            if (prompt.length === 0) {
+                return false;
+            }
+            
+            if (prompt.length < 10) {
+                showValidationMessage('Prompt should be at least 10 characters long for better results.', 'error');
+                return false;
+            }
+            
+            if (prompt.length > 1000) {
+                showValidationMessage('Prompt is too long. Please keep it under 1000 characters.', 'error');
+                return false;
+            }
+            
+            if (prompt.length >= 10) {
+                showValidationMessage('Great! Your prompt looks good.', 'success');
+                return true;
+            }
+            
+            return false;
+        }
+
+        function showValidationMessage(message, type) {
+            validationMessage.textContent = message;
+            validationMessage.classList.remove('hidden', 'success', 'error');
+            validationMessage.classList.add(type);
+        }
+
+        function updateImproveButton() {
+            const isValid = validateInput();
+            const hasCategory = selectedCategory !== null;
+            const hasText = userPromptTextarea.value.trim().length > 0;
+            
+            improveBtn.disabled = !isValid || !hasCategory || isProcessing;
+            
+            if (!hasCategory) {
+                btnText.textContent = 'Select a Category First';
+            } else if (!hasText) {
+                btnText.textContent = 'Enter Your Prompt';
+            } else if (!isValid) {
+                btnText.textContent = 'Fix Validation Issues';
+            } else {
+                btnText.textContent = 'Improve My Prompt';
+            }
+        }
+
+        function improvePrompt() {
+            if (isProcessing) return;
+            
+            isProcessing = true;
+            const originalText = userPromptTextarea.value.trim();
+            
+            // Update button state
+            improveBtn.disabled = true;
+            btnText.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing<span class="loading-dots"></span>';
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                const improved = generateImprovedPrompt(originalText, selectedCategory);
+                displayResults(originalText, improved);
+                isProcessing = false;
+                improveBtn.disabled = false;
+                btnText.innerHTML = '<i class="fas fa-magic mr-2"></i>Improve My Prompt';
+            }, 2000);
+        }
+
+        function generateImprovedPrompt(original, category) {
+            const template = improvementTemplates[category];
+            
+            // Create an improved version based on the template
+            let improved = `${template.prefix} "${original}".
+            
+${template.structure}
+
+${template.suffix}`;
+            
+            // Add category-specific enhancements
+            switch(category) {
+                case 'research':
+                    improved += `\n\nPlease structure your response to address: current state, key findings, implications, and recommendations.`;
+                    break;
+                case 'image':
+                    improved += `\n\nAdditional details: Consider aspect ratio, focal length, depth of field, and any specific artistic techniques that would enhance the visual impact.`;
+                    break;
+                case 'coding':
+                    improved += `\n\nPlease include: code comments, error handling, unit tests, and performance considerations. Also provide usage examples.`;
+                    break;
+                case 'idea':
+                    improved += `\n\nInclude: market research insights, competitive analysis, risk assessment, and scalability considerations.`;
+                    break;
+            }
+            
+            return improved;
+        }
+
+        function displayResults(original, improved) {
+            originalPrompt.textContent = original;
+            improvedPrompt.textContent = improved;
+            resultsSection.classList.remove('hidden');
+            
+            // Smooth scroll to results
+            resultsSection.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        function copyImprovedPrompt() {
+            const text = improvedPrompt.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                // Visual feedback
+                const originalText = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Copied!';
+                copyBtn.classList.add('bg-green-600');
+                copyBtn.classList.remove('bg-blue-600');
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalText;
+                    copyBtn.classList.remove('bg-green-600');
+                    copyBtn.classList.add('bg-blue-600');
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                alert('Failed to copy to clipboard. Please select and copy manually.');
+            });
+        }
+
+        function clearAll() {
+            // Clear selections and inputs
+            categoryCards.forEach(card => card.classList.remove('active'));
+            selectedCategory = null;
+            userPromptTextarea.value = '';
+            resultsSection.classList.add('hidden');
+            validationMessage.classList.add('hidden');
+            
+            // Reset counter and button
+            updateCharCounter();
+            updateImproveButton();
+            
+            // Reset tips to default
+            categoryTips.innerHTML = `
+                <li>• Be specific about your requirements</li>
+                <li>• Include context and background information</li>
+                <li>• Mention your target audience</li>
+                <li>• Specify the desired output format</li>
+            `;
+            
+            // Visual feedback
+            clearBtn.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                clearBtn.style.transform = '';
+            }, 150);
+        }
+
+        // Initialize character counter
+        updateCharCounter();
+    </script>
+</body>
+</html>
+
